@@ -2,31 +2,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "tabla.h"
 
-// Declaraciones de funciones externas generadas por Flex
-extern int yylex(void);
-extern int yylineno;
-extern char* yytext;
-extern FILE *yyin;
+
+#define TAMANO_MAXIMO_TABLA 100  // Define el tamaño máximo de las tablas
+
+extern int yylex(void);    // Declara la función yylex, generada por Flex
+extern int yyparse(void);  // Declara la función yyparse, generada por Yacc
+extern int yylineno;       // Declara la variable yylineno, lleva la cuenta del número de línea
+extern FILE *yyin;         // Archivo de entrada para el lexer
+
+void yyerror(const char *s);  // Para manejar errores sintácticos
 
 
-// Función para manejar errores sintácticos
-void yyerror(const char *s);
-
-void imprimir_tabla_CSV(FILE *archivo, Tabla *tabla, const char *nombre_clase) {
-    for (int i = 0; i < tabla->contador; i++) {
-        int num = buscar_token_en_csv(tabla->tokens[i]);
-        fprintf(archivo, "%s,%d,%d,%s\n", tabla->tokens[i], num, tabla->clase, nombre_clase);
-    }
-}
-
-// Declaración de uniones y tokens
 %}
 
+// Declaración de uniones y tokens
 %union {
-    int ival;      // Para almacenar números enteros
-    char *sval;    // Para almacenar cadenas
+    int num;      // Para almacenar números enteros
+    char *str;    // Para almacenar cadenas
 }
 
 
@@ -86,17 +81,17 @@ void imprimir_tabla_CSV(FILE *archivo, Tabla *tabla, const char *nombre_clase) {
         {
             printf("Expression Válida\n");
         }
-        ;
-
-    if_else_statement:
-        IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA ELSE LLAVEIZQUIERDA statement LLAVEDERECHA
+        | IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA ELSE LLAVEIZQUIERDA statement LLAVEDERECHA
         {
             printf("Expression Válida\n");
         }
-        // | IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA ELSE if_else_statement LLAVEIZQUIERDA statement LLAVEDERECHA
-        // {
-        //     printf("IF ELSE ANIDADO\n");
-        // }
+        ;
+
+    if_else_statement:
+        | IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA ELSE if_statement LLAVEIZQUIERDA statement LLAVEDERECHA
+        {
+            printf("IF ELSE ANIDADO\n");
+        }
         ;
 
     switch_statement:
@@ -136,61 +131,21 @@ void imprimir_tabla_CSV(FILE *archivo, Tabla *tabla, const char *nombre_clase) {
 %%
 
 // Función para manejar errores sintácticos
-void yyerror(const char *msg) {
-    fprintf(stderr, "Error sintáctico en la línea %d: %s en '%s'\n", yylineno, msg, yytext);
-    errores->addToken(errores, yytext);  // Agrega el token a la tabla de errores
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
 }
 
 // Función principal
 int main(int argc, char **argv) {
-    // Inicializar las tablas globales
-    palabras_reservadas = initTable(0, 0);
-    operadores = initTable(1, 0);
-    simbolos_especiales = initTable(2, 0);
-    numeros = initTable(3, 0);
-    variables = initTable(4, 0);
-    cadenas = initTable(5, 0);
-    errores = initTable(6, 0);
-
     if (argc > 1) {
         yyin = fopen(argv[1], "r");
     } else {
-        yyin = stdin; // Establece yyin como el archivo de entrada para Flex
+        yyin = stdin;
     }
-
+    
     yyparse();  // Llama a la función de análisis sintáctico
 
-    // Imprimir los resultados o procesar las tablas según sea necesario
-        FILE *archivo_csv = fopen("tokens.csv", "w");
-    if (!archivo_csv) {
-        perror("No se pudo abrir el archivo CSV para escritura");
-        return 1;
-    }
-
-    fprintf(archivo_csv, "Token,Identificador,Clase,Nombre_Clase\n");
-    imprimir_tabla_CSV(archivo_csv, palabras_reservadas, "Palabra Reservada");
-    imprimir_tabla_CSV(archivo_csv, operadores, "Operadores");
-    imprimir_tabla_CSV(archivo_csv, simbolos_especiales, "Símbolos Especiales");
-    imprimir_tabla_CSV(archivo_csv, numeros, "Tabla Números");
-    imprimir_tabla_CSV(archivo_csv, variables, "Tabla Variables");
-    imprimir_tabla_CSV(archivo_csv, cadenas, "Tabla Cadenas");
-    imprimir_tabla_CSV(archivo_csv, errores, "Tabla Errores");
-
-    fclose(archivo_csv);
-
-    // Liberar memoria asignada para los tokens
-    for (int i = 0; i < errores->contador; i++) {
-        free(errores->tokens[i]);
-    }
-
-    // Liberar memoria asignada para las tablas
-    free(palabras_reservadas);
-    free(operadores);
-    free(simbolos_especiales);
-    free(numeros);
-    free(variables);
-    free(cadenas);
-    free(errores);
+    finalize();  // Imprime todas las tablas en un solo archivo CSV
 
     return 0;  // Termina el programa con éxito
 }

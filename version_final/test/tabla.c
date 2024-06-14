@@ -1,40 +1,34 @@
 #include "tabla.h"
 
 // Definiciones globales de las tablas
-Tabla palabras_reservadas = {.clase = 0, .contador = 0};
-Tabla operadores = {.clase = 1, .contador = 0};
-Tabla simbolos_especiales = {.clase = 2, .contador = 0};
-Tabla numeros = {.clase = 3, .contador = 0};
-Tabla variables = {.clase = 4, .contador = 0};
+Table reserved_words = {.class = 0, .count = 0};
+Table operators = {.class = 1, .count = 0};
+Table special_symbols = {.class = 2, .count = 0};
+Table numbers = {.class = 3, .count = 0};
+Table variables = {.class = 4, .count = 0};
 
-int token_existe(Tabla *tabla, const char *token) {
-    for (int i = 0; i < tabla->contador; i++) {
-        if (strcmp(tabla->tokens[i], token) == 0) {
-            return 1;  // El token ya existe en la tabla
-        }
-    }
-    return 0;  // El token no existe en la tabla
-}
-
-void agregar_a_tabla(Tabla *tabla, const char *token) {
-    if (tabla->contador < TAMANO_MAXIMO_TABLA && !token_existe(tabla, token)) {
-        tabla->tokens[tabla->contador++] = strdup(token);
+// Agrega un token a la tabla si no existe aún
+void add_to_table(Table *table, const char *token) {
+    if (table->count < MAX_TABLE_SIZE) {
+        table->tokens[table->count++] = strdup(token);
     } else {
-        fprintf(stderr, "Error: Tabla llena o token ya existe\n");
+        fprintf(stderr, "Error: Table full or token already exists\n");
     }
 }
 
-void imprimir_tabla(Tabla *tabla, const char *nombre_clase) {
-    printf("%s:\n", nombre_clase);
-    for (int i = 0; i < tabla->contador; i++) {
-        printf("%d %s\n", i, tabla->tokens[i]);
+// Imprime el contenido de una tabla en la consola
+void print_table(Table *table, const char *class_name) {
+    printf("%s:\n", class_name);
+    for (int i = 0; i < table->count; i++) {
+        printf("%d %s\n", i, table->tokens[i]);
     }
 }
 
-void finalizar() {
-    imprimir_tabla(&palabras_reservadas, "Palabra Reservada");
-    imprimir_tabla(&operadores, "Operadores");
-    imprimir_tabla(&simbolos_especiales, "Símbolos Especiales");
-    imprimir_tabla(&numeros, "Tabla Números");
-    imprimir_tabla(&variables, "Tabla Variables");
+// Imprime todas las tablas al finalizar el programa
+void finalize() {
+    print_table(&reserved_words, "Reserved Words");
+    print_table(&operators, "Operators");
+    print_table(&special_symbols, "Special Symbols");
+    print_table(&numbers, "Numbers Table");
+    print_table(&variables, "Variables Table");
 }

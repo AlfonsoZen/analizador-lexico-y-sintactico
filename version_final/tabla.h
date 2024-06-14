@@ -1,32 +1,31 @@
-#ifndef TABLA_H
-#define TABLA_H
+#ifndef TABLE_H
+#define TABLE_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define TAMANO_MAXIMO_TABLA 100  // Define el tamaño máximo de las tablas
+#define MAX_TABLE_SIZE 100
 
-// Declaración de la estructura Tabla
-typedef struct Tabla {
-    char *tokens[TAMANO_MAXIMO_TABLA];
-    int clase;
-    int contador;
+typedef struct {
+    char *tokens[MAX_TABLE_SIZE];
+    int class;
+    int count;
+} Table;
 
-    void (*init)(struct Tabla*, int, int);
-    void (*addToken)(struct Tabla*, const char*);
-} Tabla;
+extern Table reserved_words;
+extern Table operators;
+extern Table special_symbols;
+extern Table numbers;
+extern Table variables;
 
-// Prototipos de funciones
-Tabla* initTable(int clase, int contador);
-void imprimir_tabla_CSV(FILE *archivo, Tabla *tabla, const char *nombre_clase);
-int buscar_token_en_csv(const char *token);
+// Agrega un token a la tabla si no existe aún
+void add_token_to_table(Table *table, const char *token);
 
-// Declaración de las tablas globales
-extern Tabla *palabras_reservadas;
-extern Tabla *operadores;
-extern Tabla *simbolos_especiales;
-extern Tabla *numeros;
-extern Tabla *variables;
-extern Tabla *cadenas;
-extern Tabla *errores;
+// Imprime el contenido de una tabla en la consola
+void print_table(Table *table, const char *class_name);
 
-#endif  // TABLA_H
+// Imprime todas las tablas al finalizar el programa
+void finalize();
+
+#endif

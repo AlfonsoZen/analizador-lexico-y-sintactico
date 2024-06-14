@@ -4,19 +4,19 @@ int main() {
     // Ejemplo de uso de las funciones definidas en tabla.h y tabla.c
     
     // Agregar algunos tokens a las tablas
-    agregar_a_tabla(&palabras_reservadas, "if");
-    agregar_a_tabla(&palabras_reservadas, "else");
-    agregar_a_tabla(&operadores, "+");
-    agregar_a_tabla(&operadores, "-");
-    agregar_a_tabla(&simbolos_especiales, "(");
-    agregar_a_tabla(&simbolos_especiales, ")");
-    agregar_a_tabla(&numeros, "123");
-    agregar_a_tabla(&numeros, "456");
-    agregar_a_tabla(&variables, "x");
-    agregar_a_tabla(&variables, "y");
+    add_to_table(&reserved_words, "if");
+    add_to_table(&reserved_words, "else");
+    add_to_table(&operators, "+");
+    add_to_table(&operators, "-");
+    add_to_table(&special_symbols, "(");
+    add_to_table(&special_symbols, ")");
+    add_to_table(&numbers, "123");
+    add_to_table(&numbers, "456");
+    add_to_table(&variables, "x");
+    add_to_table(&variables, "y");
 
-    // Imprimir todas las tablas
-    finalizar();
+    // Imprimir todas las tablas al finalizar
+    finalize();
 
     return 0;
 }

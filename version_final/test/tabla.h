@@ -1,27 +1,34 @@
-#ifndef TABLA_H
-#define TABLA_H
+#ifndef TABLE_H
+#define TABLE_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define TAMANO_MAXIMO_TABLA 100
+#define MAX_TABLE_SIZE 100
 
 typedef struct {
-    char *tokens[TAMANO_MAXIMO_TABLA];
-    int clase;
-    int contador;
-} Tabla;
+    char *tokens[MAX_TABLE_SIZE];
+    int class;
+    int count;
+} Table;
 
-extern Tabla palabras_reservadas;
-extern Tabla operadores;
-extern Tabla simbolos_especiales;
-extern Tabla numeros;
-extern Tabla variables;
+extern Table reserved_words;
+extern Table operators;
+extern Table special_symbols;
+extern Table numbers;
+extern Table variables;
 
-int token_existe(Tabla *tabla, const char *token);
-void agregar_a_tabla(Tabla *tabla, const char *token);
-void imprimir_tabla(Tabla *tabla, const char *nombre_clase);
-void finalizar();
+// Verifica si un token ya existe en la tabla
+int token_exists(Table *table, const char *token);
+
+// Agrega un token a la tabla si no existe aún
+void add_to_table(Table *table, const char *token);
+
+// Imprime el contenido de una tabla en la consola
+void print_table(Table *table, const char *class_name);
+
+// Imprime todas las tablas al finalizar el programa
+void finalize();
 
 #endif

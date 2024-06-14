@@ -1,45 +1,50 @@
 %{
-#include "y.tab.h"
 #include "tabla.h"
+#include "y.tab.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 %}
 
 %%
+"for"                {  add_token_to_table(&reserved_words, yytext); return FOR; }
+"while"              {  add_token_to_table(&reserved_words, yytext); return WHILE; }
+"do"                 {  add_token_to_table(&reserved_words, yytext); return DO; }
+"if"                 {  add_token_to_table(&reserved_words, yytext); return IF; }
+"else"               {  add_token_to_table(&reserved_words, yytext); return ELSE; }
+"switch"             {  add_token_to_table(&reserved_words, yytext); return SWITCH; }
+"case"               {  add_token_to_table(&reserved_words, yytext); return CASE; }
+"default"            {  add_token_to_table(&reserved_words, yytext); return DEFAULT; }
+"break"              {  add_token_to_table(&reserved_words, yytext); return BREAK; }
 
-"for"                { palabras_reservadas->addToken(palabras_reservadas, yytext); return FOR; }
-"while"              { palabras_reservadas->addToken(palabras_reservadas, yytext); return WHILE; }
-"do"                 { palabras_reservadas->addToken(palabras_reservadas, yytext); return DO; }
-"if"                 { palabras_reservadas->addToken(palabras_reservadas, yytext); return IF; }
-"else"               { palabras_reservadas->addToken(palabras_reservadas, yytext); return ELSE; }
-"switch"             { palabras_reservadas->addToken(palabras_reservadas, yytext); return SWITCH; }
-"case"               { palabras_reservadas->addToken(palabras_reservadas, yytext); return CASE; }
-"default"            { palabras_reservadas->addToken(palabras_reservadas, yytext); return DEFAULT; }
-"break"              { palabras_reservadas->addToken(palabras_reservadas, yytext); return BREAK; }
+"="                 { add_token_to_table(&special_symbols, yytext); return ASIGNACION; }
+";"                 { add_token_to_table(&special_symbols, yytext); return PUNTOYCOMA; }
+":"                 { add_token_to_table(&special_symbols, yytext); return DOSPUNTOS; }
+"("                 { add_token_to_table(&special_symbols, yytext); return PARENTESISIZQUIERDO; }
+")"                 { add_token_to_table(&special_symbols, yytext); return PARENTESISDERECHO; }
+"{"                 { add_token_to_table(&special_symbols, yytext); return LLAVEIZQUIERDA; }
+"}"                 { add_token_to_table(&special_symbols, yytext); return LLAVEDERECHA; }
+"--"                { add_token_to_table(&special_symbols, yytext); return DECREMENTO; }
+"++"                { add_token_to_table(&special_symbols, yytext); return INCREMENTO; }
 
-"=="                { operadores->addToken(operadores, yytext); return IGUALIGUAL; }
-"!="                { operadores->addToken(operadores, yytext); return DIFERENTE; }
-">"                 { operadores->addToken(operadores, yytext); return MAYOR; }
-"<"                 { operadores->addToken(operadores, yytext); return MENOR; }
-">="                { operadores->addToken(operadores, yytext); return MAYORIGUAL; }
-"<="                { operadores->addToken(operadores, yytext); return MENORIGUAL; }
+"=="                { add_token_to_table(&operators, yytext); return IGUALIGUAL; }
+"!="                { add_token_to_table(&operators, yytext); return DIFERENTE; }
+">"                 { add_token_to_table(&operators, yytext); return MAYOR; }
+"<"                 { add_token_to_table(&operators, yytext); return MENOR; }
+">="                { add_token_to_table(&operators, yytext); return MAYORIGUAL; }
+"<="                { add_token_to_table(&operators, yytext); return MENORIGUAL; }
 
-"="                 { operadores->addToken(operadores, yytext); return ASIGNACION; }
-";"                 { simbolos_especiales->addToken(simbolos_especiales, yytext); return PUNTOYCOMA; }
-":"                 { simbolos_especiales->addToken(simbolos_especiales, yytext); return DOSPUNTOS; }
-"("                 { simbolos_especiales->addToken(simbolos_especiales, yytext); return PARENTESISIZQUIERDO; }
-")"                 { simbolos_especiales->addToken(simbolos_especiales, yytext); return PARENTESISDERECHO; }
-"{"                 { simbolos_especiales->addToken(simbolos_especiales, yytext); return LLAVEIZQUIERDA; }
-"}"                 { simbolos_especiales->addToken(simbolos_especiales, yytext); return LLAVEDERECHA; }
-"--"                { operadores->addToken(operadores, yytext); return DECREMENTO; }
-"++"                { operadores->addToken(operadores, yytext); return INCREMENTO; }
 
-[a-zA-Z_][a-zA-Z0-9_]* { variables->addToken(variables, yytext); yylval.sval = strdup(yytext); return IDENTIFICADOR; }
-
-[0-9]+              { numeros->addToken(numeros, yytext); yylval.ival = atoi(yytext); return NUMERO; }
-
+[a-zA-Z_][a-zA-Z0-9_]* { yylval.str = strdup(yytext); add_token_to_table(&variables, yytext); return IDENTIFICADOR; }
+[0-9]+              { yylval.num = atoi(yytext); add_token_to_table(&numbers, yytext); return NUMERO; }
 [ \t\n]+            { /* Ignorar espacios en blanco */ }
-
 %%
 
-int yywrap() {
-    return 1;
+
+// Función de envoltura para Flex
+int yywrap(void) { 
+    return 1; 
 }

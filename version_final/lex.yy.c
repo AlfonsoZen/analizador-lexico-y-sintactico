@@ -362,10 +362,10 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[67] =
     {   0,
-        0,    0,   29,   28,   27,   28,   19,   20,   28,   28,
-       26,   18,   17,   13,   16,   12,   25,   25,   25,   25,
-       25,   25,   25,   25,   25,   21,   22,   27,   11,   24,
-       23,   26,   15,   10,   14,   25,   25,   25,   25,    3,
+        0,    0,   29,   28,   27,   28,   13,   14,   28,   28,
+       26,   12,   11,   22,   10,   21,   25,   25,   25,   25,
+       25,   25,   25,   25,   25,   15,   16,   27,   20,   18,
+       17,   26,   24,   19,   23,   25,   25,   25,   25,    3,
        25,   25,    4,   25,   25,   25,   25,   25,   25,    1,
        25,   25,   25,    7,   25,    5,   25,   25,    9,   25,
        25,    2,   25,    6,    8,    0
@@ -481,10 +481,16 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "proyecto.l"
 #line 2 "proyecto.l"
-#include "y.tab.h"
 #include "tabla.h"
-#line 487 "lex.yy.c"
-#line 488 "lex.yy.c"
+#include "y.tab.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+#line 493 "lex.yy.c"
+#line 494 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -701,10 +707,9 @@ YY_DECL
 		}
 
 	{
-#line 6 "proyecto.l"
+#line 12 "proyecto.l"
 
-
-#line 708 "lex.yy.c"
+#line 713 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -763,146 +768,146 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 8 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return FOR; }
+#line 13 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return FOR; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 9 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return WHILE; }
+#line 14 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return WHILE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 10 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return DO; }
+#line 15 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return DO; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 11 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return IF; }
+#line 16 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return IF; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 12 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return ELSE; }
+#line 17 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return ELSE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 13 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return SWITCH; }
+#line 18 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return SWITCH; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 14 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return CASE; }
+#line 19 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return CASE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 15 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return DEFAULT; }
+#line 20 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return DEFAULT; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 16 "proyecto.l"
-{ palabras_reservadas->addToken(palabras_reservadas, yytext); return BREAK; }
+#line 21 "proyecto.l"
+{  add_token_to_table(&reserved_words, yytext); return BREAK; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 18 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return IGUALIGUAL; }
+#line 23 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return ASIGNACION; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 19 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return DIFERENTE; }
+#line 24 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return PUNTOYCOMA; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 20 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return MAYOR; }
+#line 25 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return DOSPUNTOS; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 21 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return MENOR; }
+#line 26 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return PARENTESISIZQUIERDO; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 22 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return MAYORIGUAL; }
+#line 27 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return PARENTESISDERECHO; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 23 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return MENORIGUAL; }
+#line 28 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return LLAVEIZQUIERDA; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 25 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return ASIGNACION; }
+#line 29 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return LLAVEDERECHA; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 26 "proyecto.l"
-{ simbolos_especiales->addToken(simbolos_especiales, yytext); return PUNTOYCOMA; }
+#line 30 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return DECREMENTO; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 27 "proyecto.l"
-{ simbolos_especiales->addToken(simbolos_especiales, yytext); return DOSPUNTOS; }
+#line 31 "proyecto.l"
+{ add_token_to_table(&special_symbols, yytext); return INCREMENTO; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 28 "proyecto.l"
-{ simbolos_especiales->addToken(simbolos_especiales, yytext); return PARENTESISIZQUIERDO; }
+#line 33 "proyecto.l"
+{ add_token_to_table(&operators, yytext); return IGUALIGUAL; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 29 "proyecto.l"
-{ simbolos_especiales->addToken(simbolos_especiales, yytext); return PARENTESISDERECHO; }
+#line 34 "proyecto.l"
+{ add_token_to_table(&operators, yytext); return DIFERENTE; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 30 "proyecto.l"
-{ simbolos_especiales->addToken(simbolos_especiales, yytext); return LLAVEIZQUIERDA; }
+#line 35 "proyecto.l"
+{ add_token_to_table(&operators, yytext); return MAYOR; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 31 "proyecto.l"
-{ simbolos_especiales->addToken(simbolos_especiales, yytext); return LLAVEDERECHA; }
+#line 36 "proyecto.l"
+{ add_token_to_table(&operators, yytext); return MENOR; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 32 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return DECREMENTO; }
+#line 37 "proyecto.l"
+{ add_token_to_table(&operators, yytext); return MAYORIGUAL; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 33 "proyecto.l"
-{ operadores->addToken(operadores, yytext); return INCREMENTO; }
+#line 38 "proyecto.l"
+{ add_token_to_table(&operators, yytext); return MENORIGUAL; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 35 "proyecto.l"
-{ variables->addToken(variables, yytext); yylval.sval = strdup(yytext); return IDENTIFICADOR; }
+#line 41 "proyecto.l"
+{ yylval.str = strdup(yytext); add_token_to_table(&variables, yytext); return IDENTIFICADOR; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 37 "proyecto.l"
-{ numeros->addToken(numeros, yytext); yylval.ival = atoi(yytext); return NUMERO; }
+#line 42 "proyecto.l"
+{ yylval.num = atoi(yytext); add_token_to_table(&numbers, yytext); return NUMERO; }
 	YY_BREAK
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 39 "proyecto.l"
+#line 43 "proyecto.l"
 { /* Ignorar espacios en blanco */ }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 41 "proyecto.l"
+#line 44 "proyecto.l"
 ECHO;
 	YY_BREAK
-#line 906 "lex.yy.c"
+#line 911 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1907,10 +1912,11 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 41 "proyecto.l"
+#line 44 "proyecto.l"
 
 
-int yywrap() {
-    return 1;
+
+// Función de envoltura para Flex
+int yywrap(void) { 
+    return 1; 
 }
-

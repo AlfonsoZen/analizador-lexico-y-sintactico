@@ -25,39 +25,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "tabla.h"
 
-/* Declaraciones de funciones externas generadas por Flex*/
-extern int yylex(void);
-extern int yylineno;
-extern char* yytext;
-extern FILE *yyin;
+
+#define TAMANO_MAXIMO_TABLA 100  /* Define el tamaño máximo de las tablas*/
+
+extern int yylex(void);    /* Declara la función yylex, generada por Flex*/
+extern int yyparse(void);  /* Declara la función yyparse, generada por Yacc*/
+extern int yylineno;       /* Declara la variable yylineno, lleva la cuenta del número de línea*/
+extern FILE *yyin;         /* Archivo de entrada para el lexer*/
+
+void yyerror(const char *s);  /* Para manejar errores sintácticos*/
 
 
-/* Función para manejar errores sintácticos*/
-void yyerror(const char *s);
-
-void imprimir_tabla_CSV(FILE *archivo, Tabla *tabla, const char *nombre_clase) {
-    for (int i = 0; i < tabla->contador; i++) {
-        int num = buscar_token_en_csv(tabla->tokens[i]);
-        fprintf(archivo, "%s,%d,%d,%s\n", tabla->tokens[i], num, tabla->clase, nombre_clase);
-    }
-}
-
-/* Declaración de uniones y tokens*/
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
 #endif
 #ifndef YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
-#line 27 "proyecto.y"
+#line 22 "proyecto.y"
 typedef union YYSTYPE {
-    int ival;      /* Para almacenar números enteros*/
-    char *sval;    /* Para almacenar cadenas*/
+    int num;      /* Para almacenar números enteros*/
+    char *str;    /* Para almacenar cadenas*/
 } YYSTYPE;
 #endif /* !YYSTYPE_IS_DECLARED */
-#line 61 "y.tab.c"
+#line 55 "y.tab.c"
 
 /* compatibility with bison */
 #ifdef YYPARSE_PARAM
@@ -124,27 +118,28 @@ extern int YYPARSE_DECL();
 typedef int YYINT;
 static const YYINT yylhs[] = {                           -1,
     0,    1,    1,    2,    2,    2,    2,    2,    2,    2,
-    4,    5,    6,    7,    8,    9,   13,   13,   14,   10,
-   10,   11,   11,   11,   11,   11,   11,   12,   12,    3,
-    3,    3,
+    4,    5,    6,    7,    7,    8,    8,    9,   13,   13,
+   14,   10,   10,   11,   11,   11,   11,   11,   11,   12,
+   12,    3,    3,    3,
 };
 static const YYINT yylen[] = {                            2,
     1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
-   11,    7,    8,    7,   11,    8,    6,    7,    5,    3,
-    3,    3,    3,    3,    3,    3,    3,    2,    2,    2,
-    2,    2,
+   11,    7,    8,    7,   11,    0,   12,    8,    6,    7,
+    5,    3,    3,    3,    3,    3,    3,    3,    3,    2,
+    2,    2,    2,    2,
 };
 static const YYINT yydefred[] = {                         0,
     0,    0,    0,    0,    0,    0,    0,    0,    3,    4,
     5,    6,    7,    8,    9,   10,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,   29,   28,    0,    0,
-    0,    0,    0,    2,   30,   31,   32,   22,   23,   24,
-   25,   26,   27,   20,   21,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,   31,   30,    0,    0,
+    0,    0,    0,    2,   32,   33,   34,   24,   25,   26,
+   27,   28,   29,   22,   23,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,   12,    0,    0,    0,    0,    0,   13,    0,    0,
-    0,   16,    0,    0,    0,    0,    0,    0,    0,    0,
-   11,   15,    0,   19,   18,
+    0,   18,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,   11,    0,   15,    0,    0,   21,
+    0,   17,   20,    0,    0,    0,    0,
 };
 #if defined(YYDESTRUCT_CALL) || defined(YYSTYPE_TOSTRING)
 static const YYINT yystos[] = {                           0,
@@ -156,8 +151,9 @@ static const YYINT yystos[] = {                           0,
   295,  258,  275,  280,  278,  278,  278,  295,  261,  279,
   279,  279,  275,  277,  286,  286,  265,  297,  258,  296,
   295,  280,  280,  257,  266,  298,  278,  278,  263,  276,
-  276,  280,  279,  279,  287,  287,  286,  286,  267,  267,
-  280,  280,  275,  275,  297,
+  276,  280,  279,  262,  279,  291,  287,  287,  286,  277,
+  286,  279,  267,  267,  280,  295,  280,  286,  275,  275,
+  278,  280,  297,  279,  286,  280,  263,
 };
 #endif /* YYDESTRUCT_CALL || YYSTYPE_TOSTRING */
 static const YYINT yydgoto[] = {                          7,
@@ -165,28 +161,30 @@ static const YYINT yydgoto[] = {                          7,
    18,   19,   68,   76,
 };
 static const YYINT yysindex[] = {                      -233,
- -264, -256, -245, -254, -247, -239,    0, -233,    0,    0,
-    0,    0,    0,    0,    0,    0, -236, -235, -234, -215,
- -214, -213, -212, -211, -210, -238,    0,    0, -209, -233,
- -208, -208, -207,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0, -226, -221, -225, -257, -222,
- -220, -219, -208, -204, -218, -217, -216, -206, -205, -233,
- -233, -201, -198, -208, -203, -202, -192, -200, -249, -199,
- -197,    0, -196, -194, -193, -195, -191,    0, -190, -188,
- -188,    0, -233, -233, -187, -183, -189, -186, -185, -182,
-    0,    0, -201,    0,    0,
+ -263, -257, -249, -254, -243, -237,    0, -233,    0,    0,
+    0,    0,    0,    0,    0,    0, -234, -232, -231, -215,
+ -212, -211, -210, -209, -208, -225,    0,    0, -207, -233,
+ -204, -204, -203,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0, -224, -219, -223, -256, -220,
+ -218, -216, -204, -202, -214, -213, -206, -205, -201, -233,
+ -233, -198, -195, -204, -200, -199, -193, -197, -245, -196,
+ -192,    0, -191, -189, -188, -190, -194,    0, -258, -187,
+ -187,    0, -233, -186, -233, -185, -184, -178, -183, -204,
+ -182, -233, -180, -176,    0, -177,    0, -175, -198,    0,
+ -179,    0,    0, -233, -174, -171, -172,
 };
-static const YYINT yyrindex[] = {                         0,
-    0,    0,    0,    0,    0,    0,    0,   68,    0,    0,
+static const YYINT yyrindex[] = {                        68,
+    0,    0,    0,    0,    0,    0,    0,   74,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0, -170,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0, -170,
+ -170,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    1,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0, -180,    0,    0,
+    0,    0, -170,    0, -170,    0,    0,    0,    0,    0,
+    0, -170,    0,    0,    0,    0,    0,    0, -173,    0,
+    0,    0,    0, -170,    0, -168,    0,
 };
 #if YYBTYACC
 static const YYINT yycindex[] = {                         0,
@@ -199,27 +197,28 @@ static const YYINT yycindex[] = {                         0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,
 };
 #endif
 static const YYINT yygindex[] = {                         0,
-    0,   -8,  -44,    0,    0,    0,    0,    0,    0,   42,
-  -29,   10,  -19,    0,
+    0,   -8,  -42,    0,    0,    0,   -1,    0,    0,   50,
+  -29,   39,    4,    0,
 };
 #define YYTABLESIZE 281
 static const YYINT yytable[] = {                         34,
-   14,   50,   51,   20,   21,   22,   23,   24,   25,   26,
-   20,   21,   22,   23,   24,   25,   27,   28,   44,   45,
-   29,   48,   31,   58,    1,    2,    3,    4,    5,   32,
-    6,   27,   28,   30,   71,   85,   86,   33,   35,   36,
-   37,   38,   39,   40,   41,   42,   43,   26,   46,   49,
-   52,   65,   66,   53,   54,   55,   59,   56,   57,   69,
-   60,   61,   62,   67,   74,   75,   79,    1,   63,    1,
-   47,   64,   70,   95,   87,   88,   72,   73,   77,   89,
-   78,   80,   81,   90,   82,   17,    0,   83,   84,   93,
-   91,    0,   94,   92,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+   14,   50,   51,   84,   20,   21,   22,   23,   24,   25,
+   26,   20,   21,   22,   23,   24,   25,   27,   28,   29,
+   85,   48,   31,   58,    1,    2,    3,    4,    5,   30,
+    6,   44,   45,   32,   71,   27,   28,   87,   88,   33,
+   35,   38,   36,   37,   39,   40,   41,   42,   43,   26,
+   46,   65,   66,   49,   52,   53,   54,   55,   59,   56,
+   96,   57,   69,   74,   60,   61,   67,   16,   75,   63,
+    1,   79,   62,    1,   89,   64,   91,   86,   47,   72,
+   73,   77,   93,   98,   83,   78,   80,   81,   94,   82,
+   90,  107,   19,   92,   99,  105,   95,   97,  100,  104,
+  101,   70,  103,    0,  102,  106,   85,    0,    0,   16,
+   14,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -239,18 +238,18 @@ static const YYINT yytable[] = {                         34,
    14,
 };
 static const YYINT yycheck[] = {                          8,
-    0,   31,   32,  268,  269,  270,  271,  272,  273,  274,
-  268,  269,  270,  271,  272,  273,  281,  282,  257,  258,
-  277,   30,  277,   53,  258,  259,  260,  261,  262,  277,
-  264,  281,  282,  279,   64,   80,   81,  277,  275,  275,
-  275,  257,  257,  257,  257,  257,  257,  274,  258,  258,
-  258,   60,   61,  275,  280,  278,  261,  278,  278,  258,
-  279,  279,  279,  265,  257,  266,  263,    0,  275,  258,
-   29,  277,   63,   93,   83,   84,  280,  280,  278,  267,
-  278,  276,  276,  267,  280,  266,   -1,  279,  279,  275,
-  280,   -1,  275,  280,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+    0,   31,   32,  262,  268,  269,  270,  271,  272,  273,
+  274,  268,  269,  270,  271,  272,  273,  281,  282,  277,
+  279,   30,  277,   53,  258,  259,  260,  261,  262,  279,
+  264,  257,  258,  277,   64,  281,  282,   80,   81,  277,
+  275,  257,  275,  275,  257,  257,  257,  257,  257,  274,
+  258,   60,   61,  258,  258,  275,  280,  278,  261,  278,
+   90,  278,  258,  257,  279,  279,  265,    0,  266,  275,
+  258,  263,  279,    0,   83,  277,   85,   79,   29,  280,
+  280,  278,  267,   92,  279,  278,  276,  276,  267,  280,
+  277,  263,  266,  279,  275,  104,  280,  280,  275,  279,
+  278,   63,   99,   -1,  280,  280,  279,   -1,   -1,  280,
+  279,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
@@ -342,7 +341,9 @@ static const char *const yyrule[] = {
 "while_statement : WHILE PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA",
 "do_while_statement : DO LLAVEIZQUIERDA statement LLAVEDERECHA WHILE PARENTESISIZQUIERDO comparison PARENTESISDERECHO",
 "if_statement : IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA",
-"if_else_statement : IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA ELSE LLAVEIZQUIERDA statement LLAVEDERECHA",
+"if_statement : IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA ELSE LLAVEIZQUIERDA statement LLAVEDERECHA",
+"if_else_statement :",
+"if_else_statement : IF PARENTESISIZQUIERDO comparison PARENTESISDERECHO LLAVEIZQUIERDA statement LLAVEDERECHA ELSE if_statement LLAVEIZQUIERDA statement LLAVEDERECHA",
 "switch_statement : SWITCH PARENTESISIZQUIERDO IDENTIFICADOR PARENTESISDERECHO LLAVEIZQUIERDA case_statement default_statement LLAVEDERECHA",
 "case_statement : CASE NUMERO DOSPUNTOS expression BREAK PUNTOYCOMA",
 "case_statement : CASE NUMERO DOSPUNTOS expression BREAK PUNTOYCOMA case_statement",
@@ -491,69 +492,29 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 136 "proyecto.y"
+#line 131 "proyecto.y"
 
 
 // Función para manejar errores sintácticos
-void yyerror(const char *msg) {
-    fprintf(stderr, "Error sintáctico en la línea %d: %s en '%s'\n", yylineno, msg, yytext);
-    errores->addToken(errores, yytext);  // Agrega el token a la tabla de errores
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
 }
 
 // Función principal
 int main(int argc, char **argv) {
-    // Inicializar las tablas globales
-    palabras_reservadas = initTable(0, 0);
-    operadores = initTable(1, 0);
-    simbolos_especiales = initTable(2, 0);
-    numeros = initTable(3, 0);
-    variables = initTable(4, 0);
-    cadenas = initTable(5, 0);
-    errores = initTable(6, 0);
-
     if (argc > 1) {
         yyin = fopen(argv[1], "r");
     } else {
-        yyin = stdin; // Establece yyin como el archivo de entrada para Flex
+        yyin = stdin;
     }
-
+    
     yyparse();  // Llama a la función de análisis sintáctico
 
-    // Imprimir los resultados o procesar las tablas según sea necesario
-        FILE *archivo_csv = fopen("tokens.csv", "w");
-    if (!archivo_csv) {
-        perror("No se pudo abrir el archivo CSV para escritura");
-        return 1;
-    }
-
-    fprintf(archivo_csv, "Token,Identificador,Clase,Nombre_Clase\n");
-    imprimir_tabla_CSV(archivo_csv, palabras_reservadas, "Palabra Reservada");
-    imprimir_tabla_CSV(archivo_csv, operadores, "Operadores");
-    imprimir_tabla_CSV(archivo_csv, simbolos_especiales, "Símbolos Especiales");
-    imprimir_tabla_CSV(archivo_csv, numeros, "Tabla Números");
-    imprimir_tabla_CSV(archivo_csv, variables, "Tabla Variables");
-    imprimir_tabla_CSV(archivo_csv, cadenas, "Tabla Cadenas");
-    imprimir_tabla_CSV(archivo_csv, errores, "Tabla Errores");
-
-    fclose(archivo_csv);
-
-    // Liberar memoria asignada para los tokens
-    for (int i = 0; i < errores->contador; i++) {
-        free(errores->tokens[i]);
-    }
-
-    // Liberar memoria asignada para las tablas
-    free(palabras_reservadas);
-    free(operadores);
-    free(simbolos_especiales);
-    free(numeros);
-    free(variables);
-    free(cadenas);
-    free(errores);
+    finalize();  // Imprime todas las tablas en un solo archivo CSV
 
     return 0;  // Termina el programa con éxito
 }
-#line 557 "y.tab.c"
+#line 518 "y.tab.c"
 
 /* For use in generated program */
 #define yydepth (int)(yystack.s_mark - yystack.s_base)
@@ -1224,48 +1185,55 @@ yyreduce:
     switch (yyn)
     {
 case 11:
-#line 65 "proyecto.y"
+#line 60 "proyecto.y"
 	{
             printf("Expression Válida\n");
         }
-#line 1232 "y.tab.c"
+#line 1193 "y.tab.c"
 break;
 case 12:
-#line 72 "proyecto.y"
+#line 67 "proyecto.y"
 	{
             printf("Expression Válida\n");
         }
-#line 1239 "y.tab.c"
+#line 1200 "y.tab.c"
 break;
 case 13:
-#line 79 "proyecto.y"
+#line 74 "proyecto.y"
 	{
             printf("Expression Válida\n");
         }
-#line 1246 "y.tab.c"
+#line 1207 "y.tab.c"
 break;
 case 14:
-#line 86 "proyecto.y"
+#line 81 "proyecto.y"
 	{
             printf("Expression Válida\n");
         }
-#line 1253 "y.tab.c"
+#line 1214 "y.tab.c"
 break;
 case 15:
-#line 93 "proyecto.y"
+#line 85 "proyecto.y"
 	{
             printf("Expression Válida\n");
         }
-#line 1260 "y.tab.c"
+#line 1221 "y.tab.c"
 break;
-case 16:
-#line 104 "proyecto.y"
+case 17:
+#line 92 "proyecto.y"
+	{
+            printf("IF ELSE ANIDADO\n");
+        }
+#line 1228 "y.tab.c"
+break;
+case 18:
+#line 99 "proyecto.y"
 	{
             printf("Expression Válida\n");
         }
-#line 1267 "y.tab.c"
+#line 1235 "y.tab.c"
 break;
-#line 1269 "y.tab.c"
+#line 1237 "y.tab.c"
     default:
         break;
     }
