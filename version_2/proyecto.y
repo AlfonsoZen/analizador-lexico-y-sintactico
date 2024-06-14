@@ -1,0 +1,1 @@
+analizador-lexico-y-sintactico/version_1/entrada.c analizador-lexico-y-sintactico/version_1/proyecto.l analizador-lexico-y-sintactico/version_1/proyecto.y
